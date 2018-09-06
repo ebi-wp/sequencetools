@@ -15,6 +15,15 @@
  ******************************************************************************/
 package uk.ac.ebi.embl.flatfile.reader.embl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.util.Collection;
+
+import org.junit.Ignore;
+
 import uk.ac.ebi.embl.api.entry.Entry;
 import uk.ac.ebi.embl.api.validation.Origin;
 import uk.ac.ebi.embl.api.validation.Severity;
@@ -23,12 +32,26 @@ import uk.ac.ebi.embl.api.validation.ValidationResult;
 import uk.ac.ebi.embl.flatfile.reader.EntryReader;
 import uk.ac.ebi.embl.flatfile.writer.embl.EmblEntryWriter;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Collection;
-
 public class EmblEntryReaderTest extends EmblReaderTest {
+   public final static String FLAT_FILES_RES_DIR = "/flatfiles/examples/";
 
+   private String getEntryStringFromResourceFile(String file) throws Exception {
+      InputStream is = getClass().getResourceAsStream(FLAT_FILES_RES_DIR + file);
+      BufferedReader r = new BufferedReader(new InputStreamReader(is));
+      
+      StringBuffer toReturn;
+      try {
+         toReturn = new StringBuffer();
+         r.lines().forEach(s -> toReturn.append(s).append("\n") );
+         
+         return toReturn.toString();
+      } finally {
+         r.close();
+         is.close();
+      }
+      
+   }
+   
 	public void testRead_Entry() throws IOException {
 		String entryString =
 			"ID   A00001; SV 1; linear; unassigned DNA; PAT; VRL; 339 BP.\n" +
@@ -766,6 +789,7 @@ public class EmblEntryReaderTest extends EmblReaderTest {
 //		assertEquals(expectedEntryString, writer.toString());
 //	}	
 
+	@Ignore
 	public void testRead_MasterEntry() throws IOException {
 		String entryString =
 			"ID   AAAA00000000; SV 2; linear; genomic DNA; CON; PLN; 53326 SQ.\n" +
@@ -870,8 +894,8 @@ public class EmblEntryReaderTest extends EmblReaderTest {
 		assertEquals(entryString, writer.toString());
 	}
 
-	public void testReadCDSEntryWithoutCOLine() throws Exception {
-	   String entryString = getEntryStringFromResourceFile("coding_no_COLine.cds");
+   public void testReadCDSEntryWithoutCOLine() throws Exception {
+      String entryString = getEntryStringFromResourceFile("coding_no_COLine.cds");
       setBufferedReader(entryString);
       EntryReader reader = new EmblEntryReader(bufferedReader, 
             EmblEntryReader.Format.CDS_FORMAT, null);
@@ -885,7 +909,7 @@ public class EmblEntryReaderTest extends EmblReaderTest {
       StringWriter writer = new StringWriter();                      
       assertTrue(new EmblEntryWriter(entry).write(writer));
       // assertEquals(entryString, writer.toString()); the writer seem not able to exactly replicate the entry
-	}
+   }
 	
 	
 	public void testRead_MultipleACLine() throws IOException {

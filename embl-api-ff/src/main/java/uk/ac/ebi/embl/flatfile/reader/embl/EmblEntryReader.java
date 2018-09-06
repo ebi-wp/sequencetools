@@ -153,7 +153,8 @@ EmblEntryReader extends EntryReader
 			addBlockReader(new MasterTSAReader(lineReader));
         } else if( format.equals( Format.CDS_FORMAT ) )
         {
-			addBlockReader(new IDReader(lineReader));
+        	addBlockReader(new IDReader(lineReader));
+			addBlockReader(new AHReader(lineReader));
 			addBlockReader(new PAReader(lineReader));
 			addBlockReader(new DTReader(lineReader));
 			addBlockReader(new DEReader(lineReader));
