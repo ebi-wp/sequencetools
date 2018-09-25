@@ -39,6 +39,7 @@ EmblEntryReader extends EntryReader
 			EmblTag.MASTER_TPA_TAG);
     private boolean skipSourceFeature=false;
 
+    private Format format = null;
 
     public enum 
     Format
@@ -50,6 +51,7 @@ EmblEntryReader extends EntryReader
         NCR_FORMAT,
         ASSEMBLY_FILE_FORMAT
 	};
+	
 
 //TODO: delete!
     public 
@@ -67,7 +69,8 @@ EmblEntryReader extends EntryReader
     {
 
 		super(new EmblLineReader(reader, fileId));
-
+		
+		this.format = format;
 		addBlockReaders(format);
 	}
     
@@ -78,6 +81,8 @@ EmblEntryReader extends EntryReader
 					 ReaderOptions readerOptions)
     {
 		super(new EmblLineReader(reader, fileId).setReaderOptions(readerOptions));
+		
+		this.format = format;
 		addBlockReaders(format);
 	}
 
